@@ -122,31 +122,36 @@ public class ChatViewController {
         String[] split = usersMessages.split(",-");
         for (String s : split) {
 //            System.out.println(s);
-            if (s == null) return;
+            if (s == null || s.equals("")) return;
             Message message = MessageParser.parseMessage(s);
-            Text text = new Text(message.getMessage());
-            TextFlow textFlow = new TextFlow(text);
-
-            if (message.getSender().equals(username)) {
-                // Background color for the logged-in user's messages
-                textFlow.setBackground(new Background(new BackgroundFill(
-                        Color.LIGHTGREEN, // Replace with desired color
-                        new CornerRadii(5), // Rounded corners
-                        Insets.EMPTY // Padding
-                )));
-                textFlow.setPadding(new Insets(10)); // Add padding around the text
-            } else {
-                // Background color for received messages
-                textFlow.setBackground(new Background(new BackgroundFill(
-                        Color.LIGHTGRAY, // Replace with desired color
-                        new CornerRadii(5),
-                        Insets.EMPTY
-                )));
-                textFlow.setPadding(new Insets(10));
-            }
+            TextFlow textFlow = getTextFlow(message);
 
             messagePane.getChildren().add(textFlow);
         }
+    }
+
+    private TextFlow getTextFlow(Message message) {
+        Text text = new Text(message.getMessage());
+        TextFlow textFlow = new TextFlow(text);
+
+        if (message.getSender().equals(username)) {
+            // Background color for the logged-in user's messages
+            textFlow.setBackground(new Background(new BackgroundFill(
+                    Color.LIGHTGREEN, // Replace with desired color
+                    new CornerRadii(5), // Rounded corners
+                    Insets.EMPTY // Padding
+            )));
+            textFlow.setPadding(new Insets(10)); // Add padding around the text
+        } else {
+            // Background color for received messages
+            textFlow.setBackground(new Background(new BackgroundFill(
+                    Color.LIGHTGRAY, // Replace with desired color
+                    new CornerRadii(5),
+                    Insets.EMPTY
+            )));
+            textFlow.setPadding(new Insets(10));
+        }
+        return textFlow;
     }
 
     // Add message to the chat view
