@@ -69,7 +69,7 @@ public class ChatViewController {
         // Initialize socket connection
 
         try {
-            socketManager = new SocketManager(host, port);
+            socketManager = SocketManager.getInstance();
             // Simulate loading user list from a service or database
 //            Platform.runLater(this::fetchOnlineUsers);
         } catch (IOException e) {

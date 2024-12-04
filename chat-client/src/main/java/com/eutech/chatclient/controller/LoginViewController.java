@@ -1,5 +1,6 @@
 package com.eutech.chatclient.controller;
 
+import com.eutech.chatclient.SocketManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -106,22 +107,23 @@ public class LoginViewController {
 
     }
 
-    private String sendLoginRequest(String username, String password) {
-        try (Socket socket = new Socket(host, port);
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            // Send login action type, username, and password
-            out.println("login");
-            out.println(username);
-            out.println(password);
-
-            // Receive response from the server
-            return in.readLine(); // Response from the server (e.g., "Login successful" or "Invalid username/password")
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Connection error.";
-        }
+    private String sendLoginRequest(String username, String password) throws IOException {
+//        try (Socket socket = new Socket(host, port);
+//             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+//             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+//
+//            // Send login action type, username, and password
+//            out.println("login");
+//            out.println(username);
+//            out.println(password);
+//
+//            // Receive response from the server
+//            return in.readLine(); // Response from the server (e.g., "Login successful" or "Invalid username/password")
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return "Connection error.";
+//        }
+        return SocketManager.getInstance().sendLoginRequest(username, password);
     }
 
 }

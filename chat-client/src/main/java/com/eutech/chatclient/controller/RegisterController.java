@@ -1,5 +1,6 @@
 package com.eutech.chatclient.controller;
 
+import com.eutech.chatclient.SocketManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,23 +67,11 @@ public class RegisterController {
     }
 
     private String sendRegisterRequest(String username, String password, String email, String phone) {
-        try (Socket socket = new Socket(host, port);
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            // Send login action type, username, and password,email,phone
-            out.println("register");
-            out.println(username);
-            out.println(password);
-            out.println(email);
-            out.println(phone);
-
-            // Receive response from the server
-            return in.readLine(); // Response from the server (e.g., "Login successful" or "Invalid username/password")
+        try {
+            return SocketManager.getInstance().sendRegisterRequest(username, password, email, phone);
         } catch (IOException e) {
             e.printStackTrace();
             return "Connection error.";
         }
     }
-
 }
