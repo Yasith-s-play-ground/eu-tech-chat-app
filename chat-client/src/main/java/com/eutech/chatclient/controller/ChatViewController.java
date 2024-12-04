@@ -104,14 +104,14 @@ public class ChatViewController {
     }
 
     // Display messages between the current user and the selected user
-    private void showMessagesForUser(String user) throws IOException {
+    private void showMessagesForUser(String selectedUser) throws IOException {
         // This should be implemented to fetch previous messages (can be done via server or local storage)
         messagePane.getChildren().clear(); // Clear existing messages
 
         // Example of adding static messages, replace with dynamic message fetching
-        messagePane.getChildren().add(new Text("Chat with " + user));
-        String usersMessages = socketManager.getUsersMessages(user);
-        String[] split = usersMessages.split("\n");
+        messagePane.getChildren().add(new Text("Chat with " + selectedUser));
+        String usersMessages = socketManager.getUsersMessages(username,selectedUser);
+        String[] split = usersMessages.split(",-");
         for (String s : split) {
             Text text = new Text(s);
             messagePane.getChildren().add(text);

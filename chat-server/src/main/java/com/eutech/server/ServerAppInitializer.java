@@ -106,11 +106,12 @@ public class ServerAppInitializer {
             ChatHistoryService.saveMessage(sender, message, receiverList); // Save message
 
         } else if (action.equals("get_users_messages")) {
-            String user = in.readLine();
-            List<Message> messagesOfUser = ChatHistoryService.getMessagesOfUser(user);// get messages
+            String loggedUser = in.readLine();
+            String selectedUser = in.readLine();
+            List<Message> messagesOfUser = ChatHistoryService.getMessagesOfUser(loggedUser,selectedUser);// get messages
             StringBuilder messages = new StringBuilder();
             for (Message message : messagesOfUser) {
-                messages.append(message).append("\n");
+                messages.append(message).append(",-");
             }
             out.println(messages.toString());
         }

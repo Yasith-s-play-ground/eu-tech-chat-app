@@ -20,3 +20,7 @@ CREATE TABLE chat_receivers
     chat_id int NOT NULL REFERENCES chat_history(id),
     receiver  VARCHAR(50) NOT NULL REFERENCES users (username)
 );
+
+-- SELECT ch.id AS message_id, ch.sender, ch.message, ch.sent_at, NULL AS receiver FROM chat_history ch WHERE ch.sender = 'yasithperera' UNION ALL SELECT cr.chat_id AS message_id, ch.sender, ch.message, ch.sent_at, cr.receiver FROM chat_receivers cr JOIN chat_history ch ON cr.chat_id = ch.id WHERE cr.receiver = 'yasithperera' ORDER BY sent_at
+
+SELECT ch.id AS chat_id, ch.sender, cr.receiver, ch.message, ch.sent_at FROM chat_history ch JOIN chat_receivers cr ON ch.id = cr.chat_id WHERE (ch.sender = 'yasithperera' AND cr.receiver = 'madhu') OR (ch.sender = 'madhu' AND cr.receiver = 'yasithperera') ORDER BY ch.sent_at;

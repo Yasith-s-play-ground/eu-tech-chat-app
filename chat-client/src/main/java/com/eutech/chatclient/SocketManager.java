@@ -64,9 +64,10 @@ public class SocketManager {
         out.println(receiversString.toString());
     }
 
-    public String getUsersMessages(String username) throws IOException {
+    public String getUsersMessages(String loggedUser,String selectedUser) throws IOException {
         out.println("get_users_messages");
-        out.println(username);
+        out.println(loggedUser);
+        out.println(selectedUser);
         return receiveMessage();
     }
 

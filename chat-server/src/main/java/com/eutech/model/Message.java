@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 public class Message implements Serializable {
     private int messageId;
     private String sender;
+    private String receiver;
     private String message;
     private Timestamp sentAt;
-    private String receiver;
-
 }

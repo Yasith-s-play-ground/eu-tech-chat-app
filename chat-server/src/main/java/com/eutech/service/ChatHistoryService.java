@@ -45,17 +45,20 @@ public class ChatHistoryService {
         }
     }
 
-    public static List<Message> getMessagesOfUser(String user) {
+    public static List<Message> getMessagesOfUser(String loggedUser,String selectedUser) {
         List<Message> messages = new ArrayList<>();
-        String query = "SELECT ch.id AS message_id, ch.sender, ch.message, ch.sent_at, NULL AS receiver FROM chat_history ch WHERE ch.sender = ? UNION ALL SELECT cr.chat_id AS message_id, ch.sender, ch.message, ch.sent_at, cr.receiver FROM chat_receivers cr JOIN chat_history ch ON cr.chat_id = ch.id WHERE cr.receiver = ? ORDER BY sent_at";
+//        String query = "SELECT ch.id AS message_id, ch.sender, ch.message, ch.sent_at, NULL AS receiver FROM chat_history ch WHERE ch.sender = ? UNION ALL SELECT cr.chat_id AS message_id, ch.sender, ch.message, ch.sent_at, cr.receiver FROM chat_receivers cr JOIN chat_history ch ON cr.chat_id = ch.id WHERE cr.receiver = ? ORDER BY sent_at";
+        String query = "SELECT ch.id AS chat_id, ch.sender, cr.receiver, ch.message, ch.sent_at FROM chat_history ch JOIN chat_receivers cr ON ch.id = cr.chat_id WHERE (ch.sender = ? AND cr.receiver = ?) OR (ch.sender = ? AND cr.receiver = ?) ORDER BY ch.sent_at;\n";
         try {
             Connection conn = DatabaseConnection.getInstance();
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, user);
-            stmt.setString(2, user);
+            stmt.setString(1, loggedUser);
+            stmt.setString(2, selectedUser);
+            stmt.setString(3, selectedUser);
+            stmt.setString(4, loggedUser);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Message message = new Message(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getTimestamp(4), rs.getString(5));
+                Message message = new Message(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5));
                 messages.add(message);
             }
         } catch (SQLException e) {
