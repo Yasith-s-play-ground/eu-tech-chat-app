@@ -1,6 +1,7 @@
 module com.eutech.chatclient {
     requires javafx.controls;
     requires javafx.fxml;
+    requires static lombok;
 
 //    requires org.kordamp.bootstrapfx.core;
 

@@ -1,15 +1,23 @@
 package com.eutech.chatclient.controller;
 
 import com.eutech.chatclient.SocketManager;
+import com.eutech.chatclient.model.Message;
+import com.eutech.chatclient.util.MessageParser;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.io.*;
 import java.net.Socket;
@@ -49,7 +57,7 @@ public class ChatViewController {
         if (!message.isEmpty() && currentChatUser != null) {
             List<String> selectedUsers = userListView.getSelectionModel().getSelectedItems();
             // Send message to the selected user
-            System.out.println("user list size is "+selectedUsers.size());
+            System.out.println("user list size is " + selectedUsers.size());
 
             socketManager.saveMessageToDatabase(username, message, selectedUsers);
 //                socketManager.sendMessage("SEND " + currentChatUser + " " + message);
@@ -110,11 +118,34 @@ public class ChatViewController {
 
         // Example of adding static messages, replace with dynamic message fetching
         messagePane.getChildren().add(new Text("Chat with " + selectedUser));
-        String usersMessages = socketManager.getUsersMessages(username,selectedUser);
+        String usersMessages = socketManager.getUsersMessages(username, selectedUser);
         String[] split = usersMessages.split(",-");
         for (String s : split) {
-            Text text = new Text(s);
-            messagePane.getChildren().add(text);
+//            System.out.println(s);
+            if (s == null) return;
+            Message message = MessageParser.parseMessage(s);
+            Text text = new Text(message.getMessage());
+            TextFlow textFlow = new TextFlow(text);
+
+            if (message.getSender().equals(username)) {
+                // Background color for the logged-in user's messages
+                textFlow.setBackground(new Background(new BackgroundFill(
+                        Color.LIGHTGREEN, // Replace with desired color
+                        new CornerRadii(5), // Rounded corners
+                        Insets.EMPTY // Padding
+                )));
+                textFlow.setPadding(new Insets(10)); // Add padding around the text
+            } else {
+                // Background color for received messages
+                textFlow.setBackground(new Background(new BackgroundFill(
+                        Color.LIGHTGRAY, // Replace with desired color
+                        new CornerRadii(5),
+                        Insets.EMPTY
+                )));
+                textFlow.setPadding(new Insets(10));
+            }
+
+            messagePane.getChildren().add(textFlow);
         }
     }
 
