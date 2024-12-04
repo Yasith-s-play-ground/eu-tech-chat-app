@@ -31,78 +31,55 @@ class ClientHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            // Register or Authenticate User
-            while (username == null) {
+            while (true) {
+                // Register or Authenticate User
+                if (username == null) {
 
-                // Read the action type (login)
+                    // Read the action type (login)
+                    String action = in.readLine();
+
+                    if ("login".equals(action)) {
+                        String username = in.readLine();
+                        String password = in.readLine();
+
+                        // Check if credentials are correct
+                        if (UserService.authenticateUser(username, password)) {
+                            out.println("Login successful");
+                            this.username = username;
+//                            ServerAppInitializer.addClient(this);
+//                        out.println("Welcome to the chat, " + username + "!");
+//                        ServerAppInitializer.broadcast(username + " has joined the chat.", this);
+                        } else {
+                            out.println("Invalid username or password");
+                        }
+                    } else if ("register".equals(action)) {
+                        String username = in.readLine();
+                        String password = in.readLine();
+                        String email = in.readLine();
+                        String phone = in.readLine();
+
+                        // Check if credentials are correct
+                        if (UserService.registerUser(username, password, email, phone)) {
+                            out.println("Registration successful");
+                            this.username = username;
+//                            ServerAppInitializer.addClient(this);
+//                        out.println("Welcome to the chat, " + username + "!");
+//                        ServerAppInitializer.broadcast(username + " has joined the chat.", this);
+                        } else {
+                            out.println("Registration failed");
+                        }
+                    }
+
+                }
                 String action = in.readLine();
-
-                if ("login".equals(action)) {
-                    String username = in.readLine();
-                    String password = in.readLine();
-
-                    // Check if credentials are correct
-                    if (UserService.authenticateUser(username, password)) {
-                        out.println("Login successful");
-                        this.username = username;
-                        ServerAppInitializer.addClient(this);
-//                        out.println("Welcome to the chat, " + username + "!");
-//                        ServerAppInitializer.broadcast(username + " has joined the chat.", this);
-                    } else {
-                        out.println("Invalid username or password");
-                    }
-                } else if ("register".equals(action)) {
-                    String username = in.readLine();
-                    String password = in.readLine();
-                    String email = in.readLine();
-                    String phone = in.readLine();
-
-                    // Check if credentials are correct
-                    if (UserService.registerUser(username, password, email, phone)) {
-                        out.println("Registration successful");
-                        this.username = username;
-                        ServerAppInitializer.addClient(this);
-//                        out.println("Welcome to the chat, " + username + "!");
-//                        ServerAppInitializer.broadcast(username + " has joined the chat.", this);
-                    } else {
-                        out.println("Registration failed");
-                    }
+                if (action == null) {
+                    System.out.println("no action");
+                    return;
                 }
-
-            }
-            String action = in.readLine();
-            if (action == null) {
-                System.out.println("no action");
-                return;
-            }
-            if (action.equals("GET_ALL_USERS")) {
-                System.out.println("get all users");
-                List<String> allUsers = UserService.getAllUsers();// Fetch and send all users
-                StringBuilder users = new StringBuilder();
-                for (String username : allUsers) {
-                    users.append(username).append(",");
-                }
-                out.println(users.toString()); //send list as a string
-
-            } else if (action.equals("save_message")) {
-                String sender = in.readLine();
-                String message = in.readLine();
-                String receivers = in.readLine();
-                List<String> receiverList = List.of(receivers.split(","));
-                ChatHistoryService.saveMessage(sender, message, receiverList); // Save message
-
-            } else if (action.equals("get_users_messages")) {
-                String user = in.readLine();
-                List<Message> messagesOfUser = ChatHistoryService.getMessagesOfUser(user);// get messages
-                StringBuilder messages = new StringBuilder();
-                for (Message message : messagesOfUser) {
-                    messages.append(message).append("\n");
-                }
-                out.println(messages.toString());
-            }
+                ServerAppInitializer.actionMethod(action, out, in);
 
 
-            // Handle messages
+                // Handle messages
 //            String message;
 //            while ((message = in.readLine()) != null) {
 //                if (message.equalsIgnoreCase("exit")) {
@@ -111,12 +88,12 @@ class ClientHandler implements Runnable {
 ////                ServerAppInitializer.broadcast(username + ": " + message, this);
 //                ChatHistoryService.saveMessage(username, message);
 //            }
-
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                ServerAppInitializer.removeClient(username);
+//                ServerAppInitializer.removeClient(username);
 //                ServerAppInitializer.broadcast(username + " has left the chat.", this);
                 socket.close();
             } catch (IOException e) {
@@ -161,18 +138,18 @@ class ClientHandler implements Runnable {
     }
 
     // Private message to specific user
-    private void sendPrivateMessage(String targetUsername, String message) {
-        boolean userFound = false;
-        for (ClientHandler clientHandler : ServerAppInitializer.CLIENT_LIST) {
-            if (clientHandler.username.equals(targetUsername)) {
-                clientHandler.sendMessage("Private message from " + username + ": " + message);
-                userFound = true;
-                break;
-            }
-        }
-        if (!userFound) {
-            sendMessage("User " + targetUsername + " not found.");
-        }
-    }
+//    private void sendPrivateMessage(String targetUsername, String message) {
+//        boolean userFound = false;
+//        for (ClientHandler clientHandler : ServerAppInitializer.CLIENT_LIST) {
+//            if (clientHandler.username.equals(targetUsername)) {
+//                clientHandler.sendMessage("Private message from " + username + ": " + message);
+//                userFound = true;
+//                break;
+//            }
+//        }
+//        if (!userFound) {
+//            sendMessage("User " + targetUsername + " not found.");
+//        }
+//    }
 }
 

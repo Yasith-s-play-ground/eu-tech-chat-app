@@ -44,7 +44,7 @@ public class ChatViewController {
 
     @FXML
     void loadBtnOnAction(ActionEvent event) {
-//        fetchOnlineUsers();
+        fetchOnlineUsers();
     }
 
     @FXML
