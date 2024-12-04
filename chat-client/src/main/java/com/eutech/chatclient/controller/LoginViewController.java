@@ -68,10 +68,8 @@ public class LoginViewController {
         }
 
         try {
-            Socket remoteSocket = new Socket(host, port); // creating new socket
 //            System.out.println("initialise socket");
             String response = sendLoginRequest(username, password);
-//            System.out.println(response);
             new Alert(Alert.AlertType.INFORMATION, response).show();
             ((Stage) btnLogin.getScene().getWindow()).close();
 
@@ -89,7 +87,7 @@ public class LoginViewController {
 
             mainStage.setOnCloseRequest((event) -> {
                 try {
-                    remoteSocket.close();
+                    SocketManager.getInstance().closeConnection();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

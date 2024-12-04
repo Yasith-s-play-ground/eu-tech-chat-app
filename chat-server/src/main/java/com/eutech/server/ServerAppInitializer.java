@@ -42,7 +42,7 @@ public class ServerAppInitializer {
                             if (action==null){
                                 System.out.println("No action");
                                 CLIENT_LIST.remove(localSocket);
-                                return;
+                                break;
                             }
                             if ("login".equals(action)) {
                                 String username = in.readLine();
