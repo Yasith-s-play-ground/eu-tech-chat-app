@@ -3,10 +3,7 @@ package com.eutech.service;
 import com.eutech.db.DatabaseConnection;
 import com.eutech.model.Message;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +13,22 @@ public class ChatHistoryService {
         String query = "INSERT INTO chat_history (sender, message) VALUES (?, ?)";
         try {
             Connection conn = DatabaseConnection.getInstance();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, sender);
             stmt.setString(2, message);
             int i = stmt.executeUpdate();
+            System.out.println("i is " + i);
             if (i > 0) {
                 // Retrieve the generated ID
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         int generatedId = rs.getInt(1);
+                        System.out.println("generated id is " + generatedId);
                         //add receivers
                         query = "INSERT INTO chat_receivers (chat_id, receiver) VALUES (?,?)";
                         PreparedStatement stm = conn.prepareStatement(query);
                         for (String receiver : receivers) {
+                            System.out.println("receiver : " + receiver);
                             stm.setInt(1, generatedId);
                             stm.setString(2, receiver);
                             stm.addBatch();

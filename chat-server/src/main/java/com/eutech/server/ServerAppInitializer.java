@@ -90,7 +90,7 @@ public class ServerAppInitializer {
 
     static void actionMethod(String action, PrintWriter out, BufferedReader in) throws IOException {
         if (action.equals("GET_ALL_USERS")) {
-            System.out.println("get all users");
+//            System.out.println("get all users");
             List<String> allUsers = UserService.getAllUsers();// Fetch and send all users
             StringBuilder users = new StringBuilder();
             for (String username : allUsers) {

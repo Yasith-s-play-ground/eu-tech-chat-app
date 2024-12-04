@@ -59,6 +59,7 @@ public class SocketManager {
         StringBuilder receiversString = new StringBuilder();
         for (String receiver : receivers) {
             receiversString.append(receiver);
+            receiversString.append(",");
         }
         out.println(receiversString.toString());
     }

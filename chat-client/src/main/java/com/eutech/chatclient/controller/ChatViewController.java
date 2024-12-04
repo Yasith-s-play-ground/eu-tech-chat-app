@@ -49,6 +49,7 @@ public class ChatViewController {
         if (!message.isEmpty() && currentChatUser != null) {
             List<String> selectedUsers = userListView.getSelectionModel().getSelectedItems();
             // Send message to the selected user
+            System.out.println("user list size is "+selectedUsers.size());
 
             socketManager.saveMessageToDatabase(username, message, selectedUsers);
 //                socketManager.sendMessage("SEND " + currentChatUser + " " + message);
