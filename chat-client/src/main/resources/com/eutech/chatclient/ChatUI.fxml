@@ -9,11 +9,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="526.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eutech.chatclient.controller.ChatViewController">
+<AnchorPane prefHeight="526.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eutech.chatclient.controller.ChatViewController">
     <!-- Left side: Online Users List -->
     <VBox fx:id="userListPane" maxWidth="200" prefWidth="200" spacing="10" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
         <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Users" />
-      <Button fx:id="loadBtn" mnemonicParsing="false" onAction="#loadBtnOnAction" text="Load" />
         <ListView fx:id="userListView" prefHeight="460.0" prefWidth="200.0" />
     </VBox>
 
@@ -21,7 +20,7 @@
     <VBox spacing="10" AnchorPane.bottomAnchor="40" AnchorPane.leftAnchor="200" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
         <!-- Chat Messages -->
         <ScrollPane fx:id="messageScrollPane" fitToHeight="true" fitToWidth="true">
-            <VBox fx:id="messagePane" />
+            <VBox fx:id="messagePane" prefHeight="614.0" prefWidth="512.0" />
         </ScrollPane>
 
         <!-- Message Input Field -->

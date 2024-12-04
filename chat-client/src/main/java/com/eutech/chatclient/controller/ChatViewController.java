@@ -43,11 +43,6 @@ public class ChatViewController {
     private String username;
 
     @FXML
-    void loadBtnOnAction(ActionEvent event) {
-        fetchOnlineUsers();
-    }
-
-    @FXML
     void sendMessage(ActionEvent event) {
         String message = messageInput.getText().trim();
 
@@ -72,6 +67,7 @@ public class ChatViewController {
             socketManager = SocketManager.getInstance();
             // Simulate loading user list from a service or database
 //            Platform.runLater(this::fetchOnlineUsers);
+            fetchOnlineUsers();
         } catch (IOException e) {
             e.printStackTrace();
         }
