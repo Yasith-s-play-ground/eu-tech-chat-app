@@ -26,9 +26,6 @@ import java.util.List;
 
 public class ChatViewController {
 
-    private String host = "localhost";
-    private int port = 5050;
-    private Socket socket;
     private List<String> onlineUsers = new ArrayList<>();
     @FXML
     private TextField messageInput;
@@ -57,10 +54,10 @@ public class ChatViewController {
         if (!message.isEmpty() && currentChatUser != null) {
             List<String> selectedUsers = userListView.getSelectionModel().getSelectedItems();
             // Send message to the selected user
-            System.out.println("user list size is " + selectedUsers.size());
+//            System.out.println("user list size is " + selectedUsers.size());
 
             socketManager.saveMessageToDatabase(username, message, selectedUsers);
-//                socketManager.sendMessage("SEND " + currentChatUser + " " + message);
+
             addMessageToChat("You: " + message);
             messageInput.clear();
 
@@ -75,8 +72,33 @@ public class ChatViewController {
         try {
             socketManager = SocketManager.getInstance();
             // Simulate loading user list from a service or database
-//            Platform.runLater(this::fetchOnlineUsers);
-            fetchOnlineUsers();
+            Platform.runLater(() -> {
+                fetchUsers();
+            });
+
+            // Handle incoming messages
+
+            Thread thread = new Thread(() -> {
+                try {
+                    while (true) {
+                        Platform.runLater(() -> {
+                            try {
+                                showMessagesForUser(currentChatUser);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        });
+                        Thread.sleep(2000); // 2 seconds
+                    }
+                } catch (InterruptedException e) {
+                    System.out.println("Thread interrupted");
+                }
+            });
+
+            thread.start();
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,11 +117,12 @@ public class ChatViewController {
     }
 
     // Fetch the list of online users
-    private void fetchOnlineUsers() {
-        // Send request to server to get the list of online users (this should be part of your server logic)
+    private void fetchUsers() {
+        // Send request to server to get the list of users
         try {
-            // Example: Get users from the server (replace with your server call)
-            List<String> users = socketManager.getOnlineUsers();
+            // Example: Get users from the server
+            System.out.println(username);
+            List<String> users = socketManager.getUsers(username);
             onlineUsers.addAll(users);
 
             // Populate the ListView with the user list
@@ -113,21 +136,22 @@ public class ChatViewController {
 
     // Display messages between the current user and the selected user
     private void showMessagesForUser(String selectedUser) throws IOException {
-        // This should be implemented to fetch previous messages (can be done via server or local storage)
+
         messagePane.getChildren().clear(); // Clear existing messages
 
-        // Example of adding static messages, replace with dynamic message fetching
+        // Dynamic message fetching
         messagePane.getChildren().add(new Text("Chat with " + selectedUser));
         String usersMessages = socketManager.getUsersMessages(username, selectedUser);
         String[] split = usersMessages.split(",-");
         for (String s : split) {
-//            System.out.println(s);
+
             if (s == null || s.equals("")) return;
             Message message = MessageParser.parseMessage(s);
             TextFlow textFlow = getTextFlow(message);
 
             messagePane.getChildren().add(textFlow);
         }
+        messageScrollPane.setVvalue(1.0);
     }
 
     private TextFlow getTextFlow(Message message) {
@@ -156,7 +180,14 @@ public class ChatViewController {
 
     // Add message to the chat view
     private void addMessageToChat(String message) {
-        messagePane.getChildren().add(new Text(message));
+        TextFlow textFlow = new TextFlow(new Text(message));
+        textFlow.setBackground(new Background(new BackgroundFill(
+                Color.LIGHTGREEN, // Replace with desired color
+                new CornerRadii(5), // Rounded corners
+                Insets.EMPTY // Padding
+        )));
+        textFlow.setPadding(new Insets(10));
+        messagePane.getChildren().add(textFlow);
         messageScrollPane.setVvalue(1.0);  // Scroll to the bottom
     }
 
@@ -164,4 +195,5 @@ public class ChatViewController {
         this.username = username;
         System.out.println("inside init data of chat view");
     }
+
 }

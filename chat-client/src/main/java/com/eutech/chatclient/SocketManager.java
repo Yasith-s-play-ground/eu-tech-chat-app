@@ -16,6 +16,7 @@ public class SocketManager {
         socket = new Socket(host, port);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
     }
 
     // Public method to get the instance of SocketManager
@@ -75,8 +76,8 @@ public class SocketManager {
         return in.readLine();  // Receive message from server
     }
 
-    public List<String> getOnlineUsers() throws IOException {
-        sendMessage("GET_ALL_USERS");
+    public List<String> getUsers(String username) throws IOException {
+        sendMessage("GET_ALL_USERS\n"+username);
         // Assuming server returns a comma-separated list of users
         String users = receiveMessage();
         return List.of(users.split(","));
@@ -87,5 +88,6 @@ public class SocketManager {
         out.close();
         socket.close();
     }
+
 }
 
