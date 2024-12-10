@@ -41,7 +41,7 @@ public class UserService {
     }
 
     // Method to fetch all users from the database
-    public static List<String> getAllUsers() {
+    public static List<String> getAllUsers(String username) {
         List<String> users = new ArrayList<>();
         String query = "SELECT username FROM users"; // SQL query to fetch all usernames
 
@@ -50,6 +50,9 @@ public class UserService {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
+                if (username.equals(rs.getString("username"))) {
+                    continue;
+                }
                 users.add(rs.getString("username"));
             }
         } catch (SQLException e) {

@@ -20,7 +20,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.io.*;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +45,7 @@ public class ChatViewController {
     private ListView<String> userListView;
     private SocketManager socketManager;
     private String username;
+    private boolean running = true;
 
     @FXML
     void sendMessage(ActionEvent event) {
@@ -54,7 +54,6 @@ public class ChatViewController {
         if (!message.isEmpty() && currentChatUser != null) {
             List<String> selectedUsers = userListView.getSelectionModel().getSelectedItems();
             // Send message to the selected user
-//            System.out.println("user list size is " + selectedUsers.size());
 
             socketManager.saveMessageToDatabase(username, message, selectedUsers);
 
@@ -80,7 +79,7 @@ public class ChatViewController {
 
             Thread thread = new Thread(() -> {
                 try {
-                    while (true) {
+                    while (running) {
                         Platform.runLater(() -> {
                             try {
                                 showMessagesForUser(currentChatUser);
@@ -97,6 +96,12 @@ public class ChatViewController {
             });
 
             thread.start();
+
+            // Add a shutdown hook to gracefully stop the thread
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                System.out.println("Shutting down thread...");
+                thread.interrupt();
+            }));
 
 
         } catch (IOException e) {
@@ -194,6 +199,10 @@ public class ChatViewController {
     public void initData(String username) {
         this.username = username;
         System.out.println("inside init data of chat view");
+    }
+
+    public void stop(){
+        running = false;
     }
 
 }

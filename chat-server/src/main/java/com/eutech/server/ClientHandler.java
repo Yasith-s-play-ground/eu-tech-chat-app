@@ -76,7 +76,7 @@ class ClientHandler implements Runnable {
                     System.out.println("no action");
                     return;
                 }
-                ServerAppInitializer.actionMethod(action, out, in);
+               // ServerAppInitializer.actionMethod(action, out, in);
 
 
                 // Handle messages

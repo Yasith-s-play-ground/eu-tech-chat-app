@@ -20,8 +20,6 @@ import java.net.UnknownHostException;
 
 public class LoginViewController {
 
-    private String host = "localhost";
-    private int port = 5050;
     public Button btnLogin;
 
 
@@ -41,9 +39,6 @@ public class LoginViewController {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/eutech/chatclient/RegisterView.fxml"));
         stage.setScene(new Scene(fxmlLoader.load()));
-
-//        MainViewController controller = fxmlLoader.getController();
-//        controller.initData(remoteSocket, username);
 
         stage.setTitle("EU Tech Chat App");
         stage.show();
@@ -68,10 +63,11 @@ public class LoginViewController {
         }
 
         try {
-//            System.out.println("initialise socket");
             String response = sendLoginRequest(username, password);
             new Alert(Alert.AlertType.INFORMATION, response).show();
             ((Stage) btnLogin.getScene().getWindow()).close();
+
+            if (response.equals("Invalid username or password")) return;
 
             Stage mainStage = new Stage();
 
@@ -88,6 +84,7 @@ public class LoginViewController {
             mainStage.setOnCloseRequest((event) -> {
                 try {
                     SocketManager.getInstance().closeConnection();
+                    controller.stop();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -106,21 +103,6 @@ public class LoginViewController {
     }
 
     private String sendLoginRequest(String username, String password) throws IOException {
-//        try (Socket socket = new Socket(host, port);
-//             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-//
-//            // Send login action type, username, and password
-//            out.println("login");
-//            out.println(username);
-//            out.println(password);
-//
-//            // Receive response from the server
-//            return in.readLine(); // Response from the server (e.g., "Login successful" or "Invalid username/password")
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "Connection error.";
-//        }
         return SocketManager.getInstance().sendLoginRequest(username, password);
     }
 
